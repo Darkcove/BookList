@@ -48,6 +48,28 @@ class UI {
 
         list.appendChild(row);
     }
+
+    static deleteBook(el) {
+        if (el.classList.contains('delete')) {
+            el.parentElement.parentElement.remove();
+        }
+    }
+
+    static showAlert(message, className) {
+        const div = document.createElement('div');
+        div.className = `alert alert-${className}`;
+        div.appendChild(document.createTextNode(message));
+        const container = document.querySelector('.container');
+        const form = document.querySelector('#book-form');
+        container.insertBefore(div, form);
+    }
+
+    static clearFields() {
+        document.querySelector('#title').value = '';
+        document.querySelector('#author').value = '';
+        document.querySelector('#isbn').value = '';
+    }
+
 }
 
 // Store Class: handles storage
@@ -65,8 +87,21 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
     const author = document.querySelector('#author').value;
     const isbn = document.querySelector('#isbn').value;
 
-    // Instatiate book
-    const book = new Book(title, author, isbn)
-    console.log(book)
+    // validate
+    if (title === '' || author === '' || isbn === '') {
+        UI.showAlert("It 's not bro science bud!!!", 'danger');
+    } else {
+        // Instatiate book
+        const book = new Book(title, author, isbn)
+        // add book to list
+        UI.addBookToList(book);
+        UI.clearFields();
+    }
+
+
 });
 
+
+document.querySelector('#book-list').addEventListener('click', (e) => {
+    UI.deleteBook(e.target)
+});
